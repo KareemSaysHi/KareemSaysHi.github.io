@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Left, Text Right</title>
+  <style>
+    .split-container {
+      display: flex;
+      justify-content: center;
+      width: 50%;
+      margin: auto;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .left-side {
+      flex: 1; /* Adjust this number to change image proportion */
+    }
+
+    .right-side {
+      flex: 4; /* Adjust this number to change text proportion */
+    }
+
+    .left-side img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .split-container {
+        flex-direction: column;
+      }
+
+      .left-side,
+      .right-side {
+        flex: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="split-container">
+    <div class="left-side">
+      <img style="border-radius: px;" src="4desmos.png" alt="Example Image" />
+    </div>
+    <div class="right-side">
+      <h2>Title</h2>
+      <p>This is the text on the right side. You can write anything here.</p>
+    </div>
+  </div>
+
+</body>
+</html>

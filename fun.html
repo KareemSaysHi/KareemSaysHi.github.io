@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+
+      .flex-container {
+        display: flex;
+        justify-content: left;
+      }
+
+      .flex-container > div {
+        margin: 10px;
+        font-size: 30px;
+      }
+
+      .name-button {
+        margin: 5px;
+        font-size: 30px;
+        font-weight: bold;
+        height: 50px;
+        padding: 10px;
+        background-color: transparent;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+
+      .menu-button {
+        margin: 10px;
+        font-size: 20px;
+        height: 30px;
+        padding: 10px;
+        background-color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        color: black;
+        text-decoration: none;  
+
+      }
+
+      .menu-button:hover {
+        background-color: lightgray;
+      }
+
+      body {
+        background-color: lavenderblush;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        color: #333;
+        line-height: 1.5;
+      }
+
+      h1 {
+        font-size: 40px;
+      }
+      
+      p {
+        font-size: 17px;
+      }
+
+      .split-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 500px;
+        width: 70%;
+        margin: auto;
+        padding: 20px;
+        gap: 20px;
+      }
+
+      .left-side {
+        flex: 1; /* Adjust this number to change image proportion */
+      }
+
+      .left-side img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .right-side {
+        flex: 4; /* Adjust this number to change text proportion */
+      }
+
+
+
+    </style>
+    <title>Kareem's Personal Webpage</title>
+</head>
+<body>
+
+  <div class = "flex-container">
+    <a class = "name-button" onclick = "index.html">Kareem's Website</a>
+    <div> 
+      <!-- literally just a spacer -->
+    </div>
+    <a class = "menu-button" href = "index.html"> Home </a>
+    <a class = "menu-button" href = "academic.html"> Papers </a>
+    <a class = "menu-button" href = "fun.html"> Fun Stuff </a>
+  </div>
+
+  <div style="position: absolute; left: 15%; top: 75px; width: 70%; padding: 10px;">
+      <h1>Fun Stuff</h1>
+  </div>
+
+  <div class="split-container"></div> <div class="split-container"></div>
+  <div class="split-container">
+    <div class="left-side">
+      <img style="border-radius: 20px;" src="4desmos.png" alt="Example Image" />
+    </div>
+    <div class="right-side">
+      <h2>4Desmos - a 4D VR graphing calculator</h2>
+      <p>A fun project me and <a href="https://colbyrileymath.wixsite.com/colbyriley"> Colby Riley</a> are working on!  We started this at HackPrinceton 2025 and won the education category.  Check out the <a href = "https://devpost.com/software/4desmos-visualize-4d-in-vr"> devpost</a> and <a href = "https://github.com/KareemSaysHi/4Desmos"> github</a>!  More to come this summer :D</p>
+    </div>
+  </div>
+
+  
+  <div class="split-container">
+    <div class="left-side">
+      <img style="border-radius: 20px;" src="8bitcard.png" alt="Example Image" />
+    </div>
+    <div class="right-side">
+      <h2>Card Memorization</h2>
+      <p> I realized I had no interesting hobbies so I started learning how to speed-memorize a deck of cards!  My current record is 4:53, using the <a href=https://artofmemory.com/blog/pao-system>Person Action Object system</a>.  I also made a little <a href="Memorizer.exe" download>Windows application</a> to time and check an attempt</p>
+    </div>
+  </div>
+
+  <div class="split-container">
+    <div class="left-side">
+      <img style="border-radius: 20px;" src="jerry.jpg" alt="Example Image" />
+    </div>
+    <div class="right-side">
+      <h2>Animation: The Duck Potluck</h2>
+      <p> As my final project for Princeton's VIS220: Digital Animation, I animated a short film about a couple ducks at a potluck.  This probably is 150 hours of work for a 3 minute video :)  Watch it <a href="https://www.youtube.com/watch?v=u1ILG9X29Y0">here</a>!
+    </div>
+  </div>
+
+  <div class="split-container">
+    <div class="left-side">
+      <img style="border-radius: 20px;" src="penguins.png" alt="Example Image" />
+    </div>
+    <div class="right-side">
+      <h2>Penguins Online</h2>
+      <p> The Fine Hall common room has this <a href="https://www.amazon.com/Penguin-SS-Activate-Breaking-Ice-block/dp/B06WWPLH3M?th=1">Don't Break the Ice knockoff</a> lovingly known as Penguins.  I made a online version of it that you can play <a href="Web Build/game.html">here</a>! </p> 
+    </div>
+  </div>
+
+  <div class="split-container">
+    <div class="left-side">
+      <img style="border-radius: 20px;" src="puzzle.png" alt="Example Image" />
+    </div>
+    <div class="right-side">
+      <h2>Picnic Basket Puzzles</h2>
+      <p> I'm big into 3D printed puzzles, and I've designed a couple picnic basket packing puzzles heavily inspired by the <a href = "https://www.printables.com/model/236076-akakis-picnic-puzzles">Akaki's Picnic</a> puzzles.  I also presented a RadLab on puzzle making at Princeton's StudioLab in 2024.  When I get around to it, I'll put up the files here.</p>
+  </div>
+  </div>
+  <!-- If you're interested in trying my puzzles, check out the files <a href = "https://github.com/KareemSaysHi/Picnic-Puzzles">here</a>! -->
+
+  <div class="split-container">
+    <div class="left-side">
+      <img style="border-radius: 20px;" src="simdrawing.png" alt="Example Image" />
+    </div>
+    <div class="right-side">
+      <h2>Random Engineering Projects</h2>
+      <p> I was big on engineering in high school, and I almost ended up as a mechanical engineering major in college!  Some of my favorite projects are a drawing robot that plays games (picture on left), googly eyes for your car (<a href="googlies.png">picture</a>)  and an automated foosball table (<a href="crazyperson.jpg">picture</a>).</p>
+  </div>
+
+
+  
+
+</body>
+</html>

@@ -3,12 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Play Penguins Button</title>
+
+    <style>
+
+      .flex-container {
+        display: flex;
+        justify-content: left;
+      }
+
+      .flex-container > div {
+        margin: 10px;
+        font-size: 30px;
+      }
+
+      .name-button {
+        margin: 5px;
+        font-size: 30px;
+        font-weight: bold;
+        height: 50px;
+        padding: 10px;
+        background-color: transparent;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+
+      .menu-button {
+        margin: 10px;
+        font-size: 20px;
+        height: 30px;
+        padding: 10px;
+        background-color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        color: black;
+        text-decoration: none;  
+
+      }
+
+      .menu-button:hover {
+        background-color: lightgray;
+      }
+
+      body {
+        background-color: lavenderblush;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        color: #333;
+        line-height: 1.5;
+      }
+
+      h1 {
+        font-size: 40px;
+      }
+      
+      p {
+        font-size: 17px;
+      }
+    </style>
+    <title>Kareem's Personal Webpage</title>
 </head>
 <body>
 
-  <table><tr><td><img src="http://math.jhu.edu/~savitt/GTM/harris.jpg" width=86 height=190 alt=""></td><td><p>If I were a Springer-Verlag Graduate Text in Mathematics, I would be Joe Harris's <b><i>Algebraic Geometry: A First Course</i></b>.</p><p>I am intended to introduce students to algebraic geometry; to give them a sense of the basic objects considered, the questions asked about them,  and the sort of answers one can expect to obtain. I thus emphasize the classical roots of the subject. For readers interested in simply seeing what the subject is about, I avoid the more technical  details better treated with the most recent methods. For readers interested in pursuing the subject further, I will provide a  basis for understanding the developments of the last half century, which have put the subject on a radically new footing. Based on lectures given at Brown and Harvard Universities, I retain the informal style of the lectures and stresses examples throughout; the theory is developed as needed. My first part is concerned with introducing basic varieties and constructions; I describe, for example, affine and projective varieties, regular and rational maps, and particular classes of varieties such as determinantal varieties and algebraic groups. My second part discusses attributes of varieties, including dimension, smoothness, tangent spaces and cones,  degree, and parameter and moduli spaces. </p><p>Which Springer GTM would <i>you</i> be? <a href="http://math.jhu.edu/~savitt/GTM.html">The Springer GTM Test</a></p></td></tr></table>
+  <div class = "flex-container">
+    <a class = "name-button" onclick = "index.html">Kareem's Website</a>
+    <div> 
+      <!-- literally just a spacer -->
+    </div>
+    <a class = "menu-button" href = "index.html"> Home </a>
+    <a class = "menu-button" href = "academic.html"> Papers </a>
+    <a class = "menu-button" href = "fun.html"> Fun Stuff </a>
+  </div>
 
-  <button onclick="location.href='Web Build/game.html';">Play penguins!</button>
+  <div>
+    <div style="position: absolute; right: 15%; top: 250px; transform: translateY(-50%); padding: 10px;">
+      <img src="kareempic.jpg" alt="Picture of me", style="width: 350px; border-radius: 25%;">
+    </div>
+
+    <div style="position: absolute; left: 15%; top: 75px; width: 40%; padding: 10px;">
+      <h1>Hey, I'm Kareem!</h1>
+      <p> I'm a rising senior at Princeton University pursuing a mathematics major as well as a minor in computer science.  I'm passionate about mathematics education outreach, and run an after school math circle for local elementary schools in the Princeton area. </p>
+      <p> You can reach me at kj5388@princeton.edu. </p>
+      <p> You can also find my resume <a href="resume.pdf">here</a>. </p>
+     
+    </div>
+  </div>
 </body>
 </html>

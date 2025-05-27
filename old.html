@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tabbed Interface</title>
+  <style>
+    .tab-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .tab-btn {
+      padding: 10px 20px;
+      cursor: pointer;
+      background-color: #eee;
+      border: none;
+      border-bottom: 2px solid transparent;
+      transition: background-color 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      background-color: #ddd;
+    }
+
+    .tab-btn.active {
+      border-bottom: 2px solid dodgerblue;
+      font-weight: bold;
+      background-color: #ddd;
+    }
+
+    .tab-content {
+      padding: 15px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="tab-container">
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="openTab(event, 'tab1')">Tab 1</button>
+      <button class="tab-btn" onclick="openTab(event, 'tab2')">Tab 2</button>
+      <button class="tab-btn" onclick="openTab(event, 'tab3')">Tab 3</button>
+    </div>
+
+    <div class="tab-content" id="tab1">This is content for Tab 1.</div>
+    <div class="tab-content" id="tab2" style="display: none;">This is content for Tab 2.</div>
+    <div class="tab-content" id="tab3" style="display: none;">This is content for Tab 3.</div>
+  </div>
+
+  <script>
+    function openTab(evt, tabId) {
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.style.display = 'none';
+      });
+
+      // Remove 'active' class from all buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // Show selected tab and mark button active
+      document.getElementById(tabId).style.display = 'block';
+      evt.currentTarget.classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
