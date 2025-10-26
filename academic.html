@@ -1,6 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="x-dns-prefetch-control" content="off">
+
+  <!-- Fast KaTeX math rendering -->
+  <link rel="stylesheet" 
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" 
+        integrity="sha384-FR3pSu7Fbr6ozZpCJ9ih4Qv+tQ9TT5TeTEvDP8fYtKRi3qR1dJ4YjC1lBG4i3a0D" 
+        crossorigin="anonymous">
+  <script defer 
+          src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" 
+          integrity="sha384-LIgl9Jr8Zpv48f7r7Z9npaU95dR5LjK6buzrXEhDbx5LrMY2RpXEyB0vL+5dU0y+" 
+          crossorigin="anonymous"></script>
+  <script defer 
+          src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" 
+          integrity="sha384-hbZDHgUjZ6cJd9kFaD9/po5gXo1m6D0jq8C7AB7G7SlRkY6RwzN2+8xLkz7I6RzL" 
+          crossorigin="anonymous" 
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '\\[', right: '\\]', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false}
+            ]
+          });">
+  </script>
+
+    <style>
+
+      .flex-container {
+        display: flex;
+        justify-content: left;
+      }
+
+      .flex-container > div {
+        margin: 10px;
+        font-size: 30px;
+      }
+
+      .name-button {
+        margin: 5px;
+        font-size: 30px;
+        font-weight: bold;
+        height: 50px;
+        padding: 10px;
+        background-color: transparent;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+
+      .menu-button {
+        margin: 10px;
+        font-size: 20px;
+        height: 30px;
+        padding: 10px;
+        background-color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        color: black;
+        text-decoration: none;  
+
+      }
+
+      .menu-button:hover {
+        background-color: lightgray;
+      }
+
+      body {
+        background-color: lavenderblush;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        color: #333;
+        line-height: 1.5;
+      }
+
+      h1 {
+        font-size: 40px;
+      }
+      
+      p {
+        font-size: 17px;
+      }
+    </style>
+    <title>Kareem's Personal Webpage</title>
+</head>
+<body>
+
+  <div class = "flex-container">
+    <a class = "name-button" onclick = "index.html">Kareem's Website</a>
+    <div> 
+      <!-- literally just a spacer -->
+    </div>
+    <a class = "menu-button" href = "index.html"> Home </a>
+    <a class = "menu-button" href = "academic.html"> Papers </a>
+    <a class = "menu-button" href = "fun.html"> Fun Stuff </a>
+  </div>
+  <div style="position: absolute; left: 15%; top: 75px; width: 70%; padding: 10px;">
+    
+    <h1>Academic Work</h1>
+      <h3> Expository Papers </h3>
+      <ul>
+      <li> <a href="Papers/JuniorPaper.pdf">On Dimension-Free \(L^p\) bounds for Maximal Functions</a>
+      <ul>  
+        <li> My junior independent work at Princeton, advised by Assaf Naor.  I wrote an exposition of work of Stein, Bourgain, Carbery, and Muller, on dimension independent estimates for the Hardy-Littlewood maximal function associated to a convex body. </li>
+      </ul>
+      </li>
+      <li> <a href="Papers/GaussBonnet.pdf">A Proof of The Gauss-Bonnet Theorem</a>
+      <ul>  
+        <li> My final paper for my Junior Seminar (MAT 981: Geometric Analysis) at Princeton. </li>
+      </ul>
+      </ul>
+      <h3> Research Papers</h3>
+      <ul>
+        <li> <a href="https://arxiv.org/abs/2408.07912">Congruence Classes of Simplex Structures in Finite Field Vector Spaces</a> (SMALL REU 2024)
+          <ul>  
+            <li> My primary focus at SMALL 2024!  With Tim Cheek, Joe Cooper, Pico Gilman, Vismay Sharan, Jenna Shuffelton, and Marie-Hélène Tomé, advised by Eyvi Palsson and Alex Iosevich.</li>
+            <li> I presented this work with Vismay Sharan at JMM 2025 and at the Young Mathematicians Conference 2024. </li>
+          </ul>
+        </li>
+
+        <li> <a href="https://arxiv.org/abs/2408.09050">On the Density of Low Lying Zeros of a Large Family of Automorphic \(L\)-functions</a> (SMALL REU 2024)
+          <ul>  
+            <li> With Tim Cheek, Pico Gilman, and Marie-Hélène Tomé, advised by Steven J. Miller. </li>
+            <li> I presented this work with my collaborators at JMM 2025. </li>
+          </ul>
+        </li>
+
+        <li> <a href="https://arxiv.org/abs/2504.08589"> Colorings of Symmetric Unions and Partial Knots</a> (Polymath Jr REU 2022)
+          <ul>  
+            <li> A online REU project I worked on the summer before I started at Princeton.  With Ben Clingenpeel, Zongzheng Dai, Gabriel Diraviam, Krishnendu Kar, Ziyun Liu, Teo Miklethun, Haritha Nagampoozhy, Michael Perry, Moses Samuelson-Lynn, Eli Seamans, Ana Wright, Nicole Xie, and Ruiqi Zou, advised by Alexander Zupan.   </li>
+          </ul>
+        </li>
+
+      </ul>
+      <h3> Miscellaneous </h3>
+      <ul>
+
+        <li> <a href="https://arxiv.org/abs/2409.18224"> Lower Order Biases in Moment Expansions of One Parameter Families of Elliptic Curves</a> (SMALL REU 2024)
+          <ul>  
+            <li> A computational exploration of the bias conjecture, with Tim Cheek, Pico Gilman, Marie-Hélène Tomé, and Vismay Sharan, advised by Steven J. Miller.</li>
+            <li> Check out the code <a href="https://github.com/KareemSaysHi/SMALL2024-Elliptic-Curves">here</a>! </li>
+          </ul>
+        </li>
+
+        <li> <a href="https://arxiv.org/abs/2408.08856"> Variants of Conway Checkers and k-nacci Jumping</a> (SMALL REU 2024)
+          <ul>  
+            <li> A fun project on generalizing Conway Checkers! With Glenn Baruda, Joe Cooper, and Raul Marquez, advised by Steven J. Miller. </li>
+          </ul>
+        </li>
+
+        <li> <a href="https://momath.org/wp-content/uploads/2022/09/Kareem-Jaber-project.pdf"> The Unsolvable Configuration of the 15
+Puzzle and an Interesting Approach to Abstract Algebra </a>
+          <ul>  
+            <li> An outreach paper I wrote in high school on exploring the symmetric group through the lens of the 15 puzzle.  This paper was the runner up in the 2022 Steven Strogatz Prize for Math Communication. </li>
+          </ul>
+        </li>
+      </ul>
+
+      <h1>Outreach Work</h1>
+      <ul>
+        <li> I've founded and have run the Princeton Community Math Circle over the past two years, an after school math circle for local elementary schools in the Princeton area.  I keep a log of the activities I run, and you can find them <a href="https://docs.google.com/document/d/1ig5fAtoeFUplWtPZC-2WIv1YVt70fkxhRPIo-Xde0EE/edit?usp=sharing">here</a>. </li>
+        <li> I attended the Math Circle Institute at Notre Dame in Summer 2025, where I connected with organizers of math outreach programs across the globe.  We discussed new ideas for guiding questions and their surrounding pedagogy, and ran an outreach event through the Julia Robinson Math Festival for the local Notre Dame community. </li>
+        <li> I was an organizer for <a href="https://princeton.learningu.org/">Princeton Splash</a> in 2023 and 2024, an day-long outreach program for high schoolers where undergraduates teach mini-courses on everything from quantum computing to breakdancing to competitive Tetris.  I also represented Princeton at SplashCon 2024 at MIT.
+        </li>
+
+        <li> I am an organizer for the Princeton University Mathematics Competition (PuMaC), and am also the co-lead for PuMaC's MathBowl, a fun side-event with trivia and puzzles.
+        </li><!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -151,6 +323,12 @@ Puzzle and an Interesting Approach to Abstract Algebra </a>
 
         <li> I am an organizer for the Princeton University Mathematics Competition (PuMaC), and am also the co-lead for PuMaC's MathBowl, a fun side-event with trivia and puzzles.
         </li>
+    </div>
+  
+    
+
+</body>
+</html>
     </div>
   
     
