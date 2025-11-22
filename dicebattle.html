@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Battle Dice</title>
+<style>
+    body {
+        font-family: Helvetica, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        height: 100vh;
+        margin: 0;
+        background: #f2f2f2;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        width: 90%;
+        margin-top: 20px;
+        gap: 20px;
+    }
+
+    .panel {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    }
+
+    input {
+        font-size: 18px;
+        width: 80px;
+        text-align: center;
+        padding: 8px;
+        margin: 5px 0;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+
+    button {
+        font-size: 20px;
+        padding: 10px 20px;
+        margin: 10px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+    }
+
+    #battleBtn {
+        background: #333;
+        color: white;
+    }
+
+    #clearBtn {
+        background: #777;
+        color: white;
+    }
+
+    #resultText {
+        width: 80%;
+        height: 150px;
+        font-size: 18px;
+        margin-top: 10px;
+    }
+
+    #summary {
+        font-size: 24px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Player 1 -->
+    <div class="panel">
+        <h2 style="color:red;">Player 1 Dice Faces</h2>
+        <div id="p1Inputs"></div>
+        <div style="font-size:80px; color:red;">🎲</div>
+    </div>
+
+    <!-- Center -->
+    <div class="panel">
+        <h2>Number of Battles</h2>
+        <input id="battleCount" type="number">
+
+        <br><br>
+        <button id="battleBtn" onclick="runBattle()">Battle!</button>
+        <button id="clearBtn" onclick="clearInputs()">Clear</button>
+
+        <div id="summary"></div>
+
+        <textarea id="resultText" readonly></textarea>
+    </div>
+
+    <!-- Player 2 -->
+    <div class="panel">
+        <h2 style="color:blue;">Player 2 Dice Faces</h2>
+        <div id="p2Inputs"></div>
+        <div style="font-size:80px; color:blue;">🎲</div>
+    </div>
+
+</div>
+<script>
+    // Create 6 inputs per player
+    function addDiceInputs(containerId) {
+        const container = document.getElementById(containerId);
+        for (let i = 0; i < 6; i++) {
+            const input = document.createElement("input");
+            input.type = "number";
+            container.appendChild(input);
+            container.appendChild(document.createElement("br"));
+        }
+    }
+
+    addDiceInputs("p1Inputs");
+    addDiceInputs("p2Inputs");
+
+    function getDiceValues(containerId) {
+        const inputs = [...document.getElementById(containerId).getElementsByTagName("input")];
+        const values = inputs.map(i => Number(i.value));
+
+        if (values.some(isNaN)) {
+            alert("Please enter valid numbers for all dice faces.");
+            return null;
+        }
+
+        // === NEW CONDITION: sum must be 18 ===
+        const sum = values.reduce((a, b) => a + b, 0);
+        if (sum !== 18) {
+            alert("Dice faces must sum to exactly 18 (current sum = " + sum + ").");
+            return null;
+        }
+
+        return values;
+    }
+
+    function runBattle() {
+        const p1 = getDiceValues("p1Inputs");
+        const p2 = getDiceValues("p2Inputs");
+        const numBattles = Number(document.getElementById("battleCount").value);
+
+        if (!p1 || !p2 || isNaN(numBattles)) {
+            return;
+        }
+
+        let p1Wins = 0;
+        let p2Wins = 0;
+        let ties = 0;
+
+        for (let i = 0; i < numBattles; i++) {
+            const p1Roll = p1[Math.floor(Math.random() * 6)];
+            const p2Roll = p2[Math.floor(Math.random() * 6)];
+
+            if (p1Roll > p2Roll) p1Wins++;
+            else if (p2Roll > p1Roll) p2Wins++;
+            else ties++;
+        }
+
+        const summary = document.getElementById("summary");
+        summary.textContent = `${p1Wins} / ${ties} / ${p2Wins}`;
+
+        if (p1Wins > p2Wins) summary.style.color = "red";
+        else if (p2Wins > p1Wins) summary.style.color = "blue";
+        else summary.style.color = "gray";
+
+        let winner =
+            p1Wins > p2Wins ? "Player 1 Wins!" :
+            p2Wins > p1Wins ? "Player 2 Wins!" :
+            "It's a Tie Overall!";
+
+        const result = document.getElementById("resultText");
+        result.value =
+            `${winner}\n\n` +
+            `Player 1 Wins: ${p1Wins}\n` +
+            `Ties: ${ties}\n` +
+            `Player 2 Wins: ${p2Wins}\n`;
+    }
+
+    function clearInputs() {
+        ["p1Inputs", "p2Inputs"].forEach(id => {
+            const inputs = document.getElementById(id).getElementsByTagName("input");
+            [...inputs].forEach(i => i.value = "");
+        });
+
+        document.getElementById("battleCount").value = "";
+        document.getElementById("summary").textContent = "";
+        document.getElementById("summary").style.color = "black";
+        document.getElementById("resultText").value = "";
+    }
+</script>
+
+</body>
+</html>
