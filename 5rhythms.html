@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New 5Rhythms Each Day!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: #ffffff;
+    color: #1a1410;
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .layout {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .intro { max-width: 480px; }
+
+  h1 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 300;
+    font-size: clamp(44px, 5.5vw, 72px);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin: 0 0 32px 0;
+    color: #1a1410;
+  }
+
+  .description {
+    font-size: 17px;
+    line-height: 1.65;
+    color: #5a5550;
+    margin: 0;
+  }
+
+  .playlist { display: flex; justify-content: center; }
+
+  .playlist iframe {
+    width: 100%;
+    max-width: 560px;
+    border: 0;
+    border-radius: 12px;
+    display: block;
+    box-shadow:
+      0 12px 32px rgba(0, 0, 0, 0.08),
+      0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .categories {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 80px 120px;
+  }
+
+  h2 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: clamp(28px, 3.5vw, 40px);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 0 0 48px 0;
+    text-align: center;
+    color: #1a1410;
+  }
+
+  .tracks {
+    max-width: 880px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .track-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 140px;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .category {
+    font-size: 20px;
+    font-weight: 400;
+    color: #1a1410;
+    text-align: right;
+  }
+
+  .tracks iframe {
+    width: 100%;
+    border: 0;
+    border-radius: 12px;
+    display: block;
+    box-shadow:
+      0 8px 24px rgba(0, 0, 0, 0.06),
+      0 2px 6px rgba(0, 0, 0, 0.03);
+  }
+
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: 1fr;
+      padding: 48px 24px;
+      gap: 48px;
+    }
+    .intro { max-width: none; }
+    .categories { padding: 0 24px 80px; }
+
+    .track-row {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .category {
+      text-align: left;
+      font-size: 16px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <div class="intro">
+    <h1>New 5Rhythms Each Day!</h1>
+    <p class="description">Every day at 6am, come back to see this playlist update!  Spotify generates a 30-40 minute playlist, always beginning with 5 minutes of silence and ending with 3, and selecting a song in each of the 5Rhythms categories (Flowing, Staccato, Chaos, Lyrical, Stillness) by choosing songs that are similar to those in the playlists below.</p>
+  </div>
+
+  <div class="playlist">
+    <!-- PLAYLIST: replace the ID in the src below with your playlist ID -->
+    <iframe data-testid="embed-iframe" src="https://open.spotify.com/embed/playlist/37i9dQZF1FwJi0u615DleB?utm_source=generator&theme=0" width="100%" height="700" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+  </div>
+
+</div>
+
+<section class="categories">
+
+  <h2>Songs in each category</h2>
+
+  <div class="tracks">
+
+    <div class="track-row">
+      <div class="category">Flowing</div>
+      <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/3XHodUE0WQe4NLNoSv8oZM?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+
+    <div class="track-row">
+      <div class="category">Staccato</div>
+      <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/3Yo7RxhIpBZDdG5Y262mSe?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+
+    <div class="track-row">
+      <div class="category">Chaos</div>
+      <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/2h698SMoSNqOko55qUKtjt?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+
+    <div class="track-row">
+      <div class="category">Lyrical</div>
+      <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/0Gcuo55EXg9wRJcR0SAxK8?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+
+    <div class="track-row">
+      <div class="category">Stillness</div>
+      <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/7DvcwnUmgSLnP1kEbSf4F3?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+
+  </div>
+
+</section>
+
+<script>
+  // ───────────────────────────────────────────────
+  // Paste your Spotify Client ID between the quotes:
+  const SPOTIFY_CLIENT_ID = '14659dee5e2e46a8bc58c9ec1788c62b';
+  // ───────────────────────────────────────────────
+</script>
+
+</body>
+</html>
