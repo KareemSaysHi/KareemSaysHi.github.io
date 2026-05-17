@@ -1,0 +1,1245 @@
+<!-- this is literally all claude -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Claude Square</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@500;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --panel: #141414;
+    --panel-2: #1c1c1c;
+    --border: #262626;
+    --border-strong: #383838;
+    --text: #f5f5f0;
+    --text-dim: #8a8a8a;
+    --text-faint: #555;
+    --gold: #f4c430;
+    --silver: #cfcfcf;
+    --bronze: #cd7f32;
+    --accent: #ff4f00;
+    --danger: #c0392b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 20% 0%, rgba(255, 79, 0, 0.06), transparent 50%),
+      radial-gradient(circle at 80% 100%, rgba(244, 196, 48, 0.04), transparent 50%);
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.025;
+    z-index: 1;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 36px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 20px;
+  }
+
+  .brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 44px;
+    letter-spacing: 0.02em;
+    line-height: 0.95;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .brand-icon {
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 3px;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+  }
+
+  .brand-icon .sq { background: var(--text); }
+  .brand-icon .sq.king { background: var(--accent); }
+
+  .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--text-dim);
+    text-align: right;
+  }
+
+  /* === SETUP === */
+  .setup-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 32px;
+  }
+
+  .setup-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .setup-hint {
+    color: var(--text-dim);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 200px;
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    padding: 16px 18px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  textarea:focus, input[type="number"]:focus { border-color: var(--accent); }
+
+  .options {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .options-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+
+  .option-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .option-row label {
+    cursor: pointer;
+    user-select: none;
+    font-size: 14px;
+  }
+
+  .checkbox {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg);
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.15s, background 0.15s;
+    flex-shrink: 0;
+  }
+
+  .checkbox:hover { border-color: var(--text-dim); }
+
+  .checkbox:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .checkbox:checked::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 5px;
+    height: 11px;
+    border: solid var(--text);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .threshold-row {
+    padding-left: 30px;
+    transition: opacity 0.2s;
+  }
+
+  .threshold-row.disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  input[type="number"] {
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    padding: 6px 10px;
+    width: 80px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { opacity: 0.4; }
+
+  /* Rules grid */
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+
+  .rule-input {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .rule-input label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+  }
+
+  .rule-input input[type="number"] {
+    width: 100%;
+    font-size: 16px;
+    padding: 8px 10px;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .rule-input .rule-prefix {
+    color: var(--text-faint);
+  }
+
+  .rule-input.gold label { color: var(--gold); }
+  .rule-input.silver label { color: var(--silver); }
+  .rule-input.bronze label { color: var(--bronze); }
+  .rule-input.danger label { color: var(--danger); }
+
+  .rules-hint {
+    font-size: 12px;
+    color: var(--text-faint);
+    margin-top: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .setup-actions {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .btn-primary {
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    padding: 14px 32px;
+    cursor: pointer;
+    transition: transform 0.15s, background 0.15s;
+  }
+
+  .btn-primary:hover { background: var(--accent); color: var(--text); transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border-strong);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+
+  .btn-ghost:hover { color: var(--text); border-color: var(--text); }
+  .btn-ghost:disabled { opacity: 0.3; cursor: not-allowed; }
+  .btn-ghost:disabled:hover { color: var(--text-dim); border-color: var(--border-strong); }
+
+  .btn-ghost.accent { color: var(--accent); border-color: rgba(255, 79, 0, 0.4); }
+  .btn-ghost.accent:hover { background: var(--accent); color: var(--text); border-color: var(--accent); }
+  .btn-ghost.accent:disabled { color: var(--text-faint); border-color: var(--border); background: transparent; }
+
+  .btn-ghost.active {
+    color: var(--text);
+    border-color: var(--gold);
+    background: rgba(244, 196, 48, 0.08);
+  }
+
+  .count-indicator {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* === GAME === */
+  .game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 12px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    flex-wrap: wrap;
+  }
+
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-gold { background: var(--gold); }
+  .dot-silver { background: var(--silver); }
+  .dot-bronze { background: var(--bronze); }
+  .dot-danger { background: var(--danger); }
+
+  .game-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* === TARGET BANNER === */
+  .target-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 12px 0 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .target-banner::before,
+  .target-banner::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+  }
+
+  .target-banner strong {
+    color: var(--gold);
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: 400;
+    font-size: 22px;
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+
+  /* === QUEUE === */
+  .queue {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* Divider between top 4 (court) and the rest (in line) */
+  .queue-divider {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 14px 4px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .queue-divider::before,
+  .queue-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border-strong), transparent);
+  }
+
+  .queue-row {
+    display: flex;
+    gap: 4px;
+  }
+
+  .queue-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    align-items: center;
+    gap: 20px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 18px 22px 18px 0;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    text-align: left;
+    color: var(--text);
+    font-family: inherit;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .queue-item:hover { background: var(--panel-2); border-color: var(--border-strong); }
+  .queue-item:active { transform: scale(0.998); }
+
+  .queue-item .position-bar { height: 100%; width: 4px; background: var(--border); }
+
+  .queue-item[data-rank="1"] .position-bar { background: var(--gold); box-shadow: 0 0 24px rgba(244, 196, 48, 0.35); }
+  .queue-item[data-rank="2"] .position-bar { background: var(--silver); box-shadow: 0 0 18px rgba(207, 207, 207, 0.25); }
+  .queue-item[data-rank="3"] .position-bar { background: var(--bronze); box-shadow: 0 0 18px rgba(205, 127, 50, 0.3); }
+  .queue-item[data-rank="4"] .position-bar { background: rgba(245, 245, 240, 0.35); }
+
+  .queue-item[data-rank="1"] { border-color: rgba(244, 196, 48, 0.25); }
+  .queue-item[data-rank="2"] { border-color: rgba(207, 207, 207, 0.18); }
+  .queue-item[data-rank="3"] { border-color: rgba(205, 127, 50, 0.2); }
+  .queue-item[data-rank="4"] { border-color: rgba(245, 245, 240, 0.1); }
+
+  .name-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .award-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--text-faint);
+    min-height: 12px;
+  }
+
+  .queue-item[data-rank="1"] .award-tag { color: var(--gold); }
+  .queue-item[data-rank="2"] .award-tag { color: var(--silver); }
+  .queue-item[data-rank="3"] .award-tag { color: var(--bronze); }
+  .queue-item[data-rank="4"] .award-tag { color: rgba(245, 245, 240, 0.45); }
+
+  .score-cell {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    position: relative;
+  }
+
+  .score {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    min-width: 48px;
+    text-align: right;
+  }
+
+  .score.hidden-score { color: var(--text-faint); }
+  .score.peeking { color: var(--gold); }
+
+  .score-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--text-faint);
+  }
+
+  /* === MEG BUTTON === */
+  .meg-btn {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    padding: 0 18px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+    text-transform: uppercase;
+    align-self: stretch;
+    min-width: 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    line-height: 1;
+  }
+
+  .meg-btn .meg-text { font-size: 11px; }
+  .meg-btn .meg-sub { font-size: 9px; opacity: 0.7; letter-spacing: 0.1em; }
+
+  .meg-btn:hover {
+    background: var(--danger);
+    color: var(--text);
+    border-color: var(--danger);
+  }
+
+  .meg-btn:active { transform: scale(0.97); }
+
+  /* === GAIN ANIMATIONS === */
+  .gain {
+    position: absolute;
+    right: 0;
+    top: -8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    color: var(--accent);
+    pointer-events: none;
+    animation: floatUp 900ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+
+  .gain.gold { color: var(--gold); }
+  .gain.silver { color: var(--silver); }
+  .gain.bronze { color: var(--bronze); }
+  .gain.danger { color: var(--danger); }
+
+  @keyframes floatUp {
+    0%   { opacity: 0; transform: translateY(8px); }
+    20%  { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-32px); }
+  }
+
+  /* === LOG === */
+  .log-section {
+    margin-top: 36px;
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+  }
+
+  .log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+  }
+
+  .log-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+  }
+
+  .log-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+
+  .log {
+    list-style: none;
+    max-height: 240px;
+    overflow-y: auto;
+    background: var(--panel);
+    border: 1px solid var(--border);
+  }
+
+  .log::-webkit-scrollbar { width: 6px; }
+  .log::-webkit-scrollbar-track { background: var(--panel); }
+  .log::-webkit-scrollbar-thumb { background: var(--border-strong); }
+
+  .log-empty {
+    padding: 24px;
+    text-align: center;
+    color: var(--text-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  .log-entry {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    animation: slideInLog 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .log-entry:last-child { border-bottom: none; }
+
+  .log-entry.undone {
+    opacity: 0.35;
+    text-decoration: line-through;
+  }
+
+  @keyframes slideInLog {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .log-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+
+  .log-name {
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .log-meg-tag {
+    display: inline-block;
+    padding: 2px 7px;
+    background: var(--danger);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    flex-shrink: 0;
+  }
+
+  .log-pos {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* === REVEAL TOAST === */
+  .reveal-toast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: var(--text);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 0.1em;
+    padding: 14px 28px;
+    z-index: 10;
+    box-shadow: 0 8px 32px rgba(255, 79, 0, 0.4);
+    animation: toastIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), toastOut 0.4s 2.4s cubic-bezier(0.4, 0, 1, 1) forwards;
+  }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translate(-50%, -16px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+  }
+
+  @keyframes toastOut {
+    to { opacity: 0; transform: translate(-50%, -16px); }
+  }
+
+  /* === ENTRANCE ANIMATION === */
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .queue.initial-render .queue-row {
+    animation: slideIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  }
+
+  .queue.initial-render .queue-row:nth-child(1) { animation-delay: 0.00s; }
+  .queue.initial-render .queue-row:nth-child(2) { animation-delay: 0.04s; }
+  .queue.initial-render .queue-row:nth-child(3) { animation-delay: 0.08s; }
+  .queue.initial-render .queue-row:nth-child(4) { animation-delay: 0.12s; }
+  .queue.initial-render .queue-row:nth-child(5) { animation-delay: 0.16s; }
+  .queue.initial-render .queue-row:nth-child(6) { animation-delay: 0.20s; }
+  .queue.initial-render .queue-row:nth-child(7) { animation-delay: 0.24s; }
+  .queue.initial-render .queue-row:nth-child(8) { animation-delay: 0.28s; }
+  .queue.initial-render .queue-row:nth-child(n+9) { animation-delay: 0.32s; }
+
+  @media (max-width: 540px) {
+    .container { padding: 28px 16px 60px; }
+    .brand { font-size: 34px; gap: 12px; }
+    .brand-icon { width: 24px; height: 24px; }
+    .name { font-size: 22px; }
+    .score { font-size: 22px; }
+    .queue-item { grid-template-columns: 44px 1fr auto; gap: 12px; padding: 14px 16px 14px 0; }
+    .setup-card { padding: 22px; }
+    .game-header { flex-wrap: wrap; }
+    .meg-btn { min-width: 56px; padding: 0 12px; }
+    .target-banner strong { font-size: 18px; }
+    .rules-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="header">
+    <h1 class="brand">
+      CLAUDE
+      <span class="brand-icon" aria-hidden="true">
+        <span class="sq king"></span><span class="sq"></span><span class="sq"></span><span class="sq"></span>
+      </span>
+      SQUARE
+    </h1>
+    <div class="meta" id="meta">SETUP</div>
+  </header>
+
+  <main id="main"></main>
+</div>
+
+<script>
+  const state = {
+    mode: 'setup',
+    namesText: '',
+    queue: [],
+    nextId: 1,
+    history: [],
+    log: [],
+    settings: {
+      hideScores: false,
+      revealThreshold: 10,
+      rules: {
+        first: 3,
+        second: 2,
+        third: 1,
+        megPenalty: 1,
+      },
+    },
+    revealed: false,
+    peek: false,
+  };
+
+  const main = document.getElementById('main');
+  const metaEl = document.getElementById('meta');
+
+  // ===== Utilities =====
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function parseNames(text) {
+    return text.split('\n').map(s => s.trim()).filter(Boolean);
+  }
+
+  function scoresVisible() {
+    return !state.settings.hideScores || state.revealed || state.peek;
+  }
+
+  function rankAttr(i) { return i < 4 ? String(i + 1) : ''; }
+
+  function awardLabel(i) {
+    const r = state.settings.rules;
+    if (i === 0) return `+${r.first} NEXT TURN`;
+    if (i === 1) return `+${r.second} NEXT TURN`;
+    if (i === 2) return `+${r.third} NEXT TURN`;
+    if (i === 3) return 'ON COURT';
+    return '';
+  }
+
+  function deepCloneQueue(q) {
+    return q.map(p => ({ id: p.id, name: p.name, score: p.score }));
+  }
+
+  // ===== Setup screen =====
+
+  function renderSetup() {
+    metaEl.textContent = 'SETUP';
+    const s = state.settings;
+    const r = s.rules;
+    main.innerHTML = `
+      <section class="setup-card">
+        <label class="setup-label" for="names-input">Roster</label>
+        <p class="setup-hint">One name per line. Order doesn't matter — the queue is randomized on start.</p>
+        <textarea id="names-input" placeholder="Ada Lovelace&#10;Grace Hopper&#10;Alan Turing&#10;Katherine Johnson&#10;...">${escapeHtml(state.namesText)}</textarea>
+
+        <div class="options">
+          <div class="options-title">Score Visibility</div>
+
+          <div class="option-row">
+            <input type="checkbox" id="hide-scores" class="checkbox" ${s.hideScores ? 'checked' : ''}>
+            <label for="hide-scores">Hide scores during play</label>
+          </div>
+
+          <div class="option-row threshold-row ${s.hideScores ? '' : 'disabled'}" id="threshold-row">
+            <label for="threshold">Reveal when anyone reaches</label>
+            <input type="number" id="threshold" min="1" step="1" value="${s.revealThreshold}">
+            <label for="threshold">points</label>
+          </div>
+        </div>
+
+        <div class="options">
+          <div class="options-title">Custom Rules</div>
+          <div class="rules-grid">
+            <div class="rule-input gold">
+              <label for="rule-first">1st Reward</label>
+              <input type="number" id="rule-first" min="0" step="1" value="${r.first}">
+            </div>
+            <div class="rule-input silver">
+              <label for="rule-second">2nd Reward</label>
+              <input type="number" id="rule-second" min="0" step="1" value="${r.second}">
+            </div>
+            <div class="rule-input bronze">
+              <label for="rule-third">3rd Reward</label>
+              <input type="number" id="rule-third" min="0" step="1" value="${r.third}">
+            </div>
+            <div class="rule-input danger">
+              <label for="rule-meg">Meg Penalty</label>
+              <input type="number" id="rule-meg" min="0" step="1" value="${r.megPenalty}">
+            </div>
+          </div>
+          <div class="rules-hint">Points awarded to positions 1–3 each turn. Meg penalty subtracted from megged player.</div>
+        </div>
+
+        <div class="setup-actions">
+          <button class="btn-primary" id="start-btn">Start →</button>
+          <span class="count-indicator" id="count">0 names</span>
+        </div>
+      </section>
+    `;
+
+    const textarea = document.getElementById('names-input');
+    const startBtn = document.getElementById('start-btn');
+    const countEl = document.getElementById('count');
+    const hideCheckbox = document.getElementById('hide-scores');
+    const thresholdInput = document.getElementById('threshold');
+    const thresholdRow = document.getElementById('threshold-row');
+
+    function updateCount() {
+      const n = parseNames(textarea.value).length;
+      countEl.textContent = `${n} name${n === 1 ? '' : 's'}`;
+      startBtn.disabled = n === 0;
+    }
+
+    textarea.addEventListener('input', e => {
+      state.namesText = e.target.value;
+      updateCount();
+    });
+
+    hideCheckbox.addEventListener('change', e => {
+      state.settings.hideScores = e.target.checked;
+      thresholdRow.classList.toggle('disabled', !e.target.checked);
+    });
+
+    thresholdInput.addEventListener('input', e => {
+      const v = parseInt(e.target.value, 10);
+      if (!isNaN(v) && v > 0) state.settings.revealThreshold = v;
+    });
+
+    // Rule inputs
+    function wireRule(id, key) {
+      document.getElementById(id).addEventListener('input', e => {
+        const v = parseInt(e.target.value, 10);
+        if (!isNaN(v) && v >= 0) state.settings.rules[key] = v;
+      });
+    }
+    wireRule('rule-first', 'first');
+    wireRule('rule-second', 'second');
+    wireRule('rule-third', 'third');
+    wireRule('rule-meg', 'megPenalty');
+
+    startBtn.addEventListener('click', startGame);
+    updateCount();
+    textarea.focus();
+  }
+
+  function startGame() {
+    const names = parseNames(state.namesText);
+    if (names.length === 0) return;
+    const shuffled = shuffle(names);
+    state.queue = shuffled.map(name => ({
+      id: state.nextId++,
+      name,
+      score: 0,
+    }));
+    state.history = [];
+    state.log = [];
+    state.revealed = false;
+    state.peek = false;
+    state.mode = 'playing';
+    renderGame(/*initial=*/true);
+  }
+
+  // ===== Game screen =====
+
+  function renderGame(initial = false) {
+    metaEl.textContent = `LIVE · ${state.queue.length} IN ROTATION`;
+    const showPeek = state.settings.hideScores && !state.revealed;
+    const showTarget = state.settings.hideScores;
+    const r = state.settings.rules;
+
+    main.innerHTML = `
+      <div class="game-header">
+        <div class="legend">
+          <span class="legend-item"><span class="legend-dot dot-gold"></span>+${r.first}</span>
+          <span class="legend-item"><span class="legend-dot dot-silver"></span>+${r.second}</span>
+          <span class="legend-item"><span class="legend-dot dot-bronze"></span>+${r.third}</span>
+          <span class="legend-item"><span class="legend-dot dot-danger"></span>MEG −${r.megPenalty}</span>
+        </div>
+        <div class="game-actions">
+          ${showPeek ? `<button class="btn-ghost ${state.peek ? 'active' : ''}" id="peek-btn">${state.peek ? '◉ Hide' : '◌ Peek'}</button>` : ''}
+          <button class="btn-ghost accent" id="undo-btn" ${state.history.length === 0 ? 'disabled' : ''}>↶ Undo</button>
+          <button class="btn-ghost" id="reset-btn">Reset</button>
+        </div>
+      </div>
+
+      ${showTarget ? `<div class="target-banner">First to <strong>${state.settings.revealThreshold}</strong> points</div>` : ''}
+
+      <ul class="queue ${initial ? 'initial-render' : ''}" id="queue-list">
+        ${renderQueueItems()}
+      </ul>
+
+      <section class="log-section">
+        <div class="log-header">
+          <div class="log-title">Click Log</div>
+          <div class="log-count">${activeLogCount()} action${activeLogCount() === 1 ? '' : 's'}</div>
+        </div>
+        ${renderLog()}
+      </section>
+    `;
+
+    document.getElementById('reset-btn').addEventListener('click', () => {
+      if (confirm('Reset and return to setup?')) {
+        state.mode = 'setup';
+        state.queue = [];
+        state.history = [];
+        state.log = [];
+        state.revealed = false;
+        state.peek = false;
+        renderSetup();
+      }
+    });
+
+    document.getElementById('undo-btn').addEventListener('click', onUndo);
+    const peekBtn = document.getElementById('peek-btn');
+    if (peekBtn) peekBtn.addEventListener('click', onPeekToggle);
+
+    attachItemHandlers();
+  }
+
+  function renderQueueItems() {
+    const parts = [];
+    state.queue.forEach((p, i) => {
+      // Insert the "in line" divider just before position 5 (index 4) if there are 5+ players
+      if (i === 4) {
+        parts.push(`<li class="queue-divider"><span>In Line</span></li>`);
+      }
+      parts.push(renderItem(p, i));
+    });
+    return parts.join('');
+  }
+
+  function activeLogCount() {
+    return state.log.filter(e => !e.undone).length;
+  }
+
+  function renderItem(p, i) {
+    const rank = rankAttr(i);
+    const award = awardLabel(i);
+    const showScore = scoresVisible();
+    const scoreText = showScore ? p.score : '—';
+    const scoreClass = !showScore ? 'hidden-score' : (state.peek && state.settings.hideScores && !state.revealed ? 'peeking' : '');
+    return `
+      <li>
+        <div class="queue-row" data-id="${p.id}">
+          <button class="queue-item" data-id="${p.id}" data-rank="${rank}">
+            <span class="position-bar"></span>
+            <span class="name-cell">
+              <span class="name">${escapeHtml(p.name)}</span>
+              <span class="award-tag">${award}</span>
+            </span>
+            <span class="score-cell">
+              <span class="score ${scoreClass}" data-score-for="${p.id}">${scoreText}</span>
+              <span class="score-label">PTS</span>
+            </span>
+          </button>
+          <button class="meg-btn" data-meg-id="${p.id}" title="Meg: −${state.settings.rules.megPenalty} and send to bottom">
+            <span class="meg-text">MEG</span>
+            <span class="meg-sub">−${state.settings.rules.megPenalty}</span>
+          </button>
+        </div>
+      </li>
+    `;
+  }
+
+  function renderLog() {
+    if (state.log.length === 0) {
+      return `<div class="log-empty">No clicks yet — pick someone</div>`;
+    }
+    const rows = state.log.slice().reverse().map((entry, idxFromEnd) => {
+      const n = state.log.length - idxFromEnd;
+      return `
+        <li class="log-entry ${entry.undone ? 'undone' : ''}">
+          <span class="log-num">${String(n).padStart(2, '0')}</span>
+          <span class="log-name">
+            ${escapeHtml(entry.name)}
+            ${entry.meg ? '<span class="log-meg-tag">MEG</span>' : ''}
+          </span>
+          <span class="log-pos">was #${entry.fromPos}</span>
+        </li>
+      `;
+    }).join('');
+    return `<ul class="log">${rows}</ul>`;
+  }
+
+  function attachItemHandlers() {
+    document.querySelectorAll('.queue-item').forEach(btn => {
+      btn.addEventListener('click', () => doAction(parseInt(btn.dataset.id, 10), false));
+    });
+    document.querySelectorAll('.meg-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        doAction(parseInt(btn.dataset.megId, 10), true);
+      });
+    });
+  }
+
+  // ===== Peek toggle =====
+
+  function onPeekToggle() {
+    state.peek = !state.peek;
+    const showScore = scoresVisible();
+    state.queue.forEach(p => {
+      const el = document.querySelector(`[data-score-for="${p.id}"]`);
+      if (!el) return;
+      el.textContent = showScore ? p.score : '—';
+      el.classList.toggle('hidden-score', !showScore);
+      el.classList.toggle('peeking', state.peek && state.settings.hideScores && !state.revealed);
+    });
+    const peekBtn = document.getElementById('peek-btn');
+    if (peekBtn) {
+      peekBtn.classList.toggle('active', state.peek);
+      peekBtn.innerHTML = state.peek ? '◉ Hide' : '◌ Peek';
+    }
+  }
+
+  // ===== Action (click or meg) =====
+
+  function doAction(id, isMeg) {
+    const listEl = document.getElementById('queue-list');
+    listEl.classList.remove('initial-render');
+
+    const snapshot = {
+      queue: deepCloneQueue(state.queue),
+      revealed: state.revealed,
+    };
+
+    const firstRects = new Map();
+    listEl.querySelectorAll('.queue-row').forEach(el => {
+      firstRects.set(el.dataset.id, el.getBoundingClientRect());
+    });
+
+    const idx = state.queue.findIndex(p => p.id === id);
+    if (idx === -1) return;
+    const fromPos = idx + 1;
+    const [moved] = state.queue.splice(idx, 1);
+    if (isMeg) moved.score -= state.settings.rules.megPenalty;
+    state.queue.push(moved);
+
+    const r = state.settings.rules;
+    const gains = [r.first, r.second, r.third];
+    const gainedBy = [];
+    for (let i = 0; i < Math.min(3, state.queue.length); i++) {
+      if (state.queue[i].id === moved.id) continue;
+      if (gains[i] === 0) continue; // skip animation for zero rewards
+      state.queue[i].score += gains[i];
+      gainedBy.push({ id: state.queue[i].id, amount: gains[i], rank: i });
+    }
+    // Edge case: if reward is 0 but person isn't the moved one, we already skipped via continue
+    // but we still want to apply non-zero. The loop above only skips the moved person, so
+    // re-run pure score logic to ensure non-zero are applied (we already did above; the
+    // animation skip is separate).
+
+    const wasRevealed = state.revealed;
+    if (state.settings.hideScores && !state.revealed) {
+      const max = state.queue.length ? Math.max(...state.queue.map(p => p.score)) : 0;
+      if (max >= state.settings.revealThreshold) {
+        state.revealed = true;
+      }
+    }
+    const justRevealed = !wasRevealed && state.revealed;
+
+    state.history.push(snapshot);
+    state.log.push({ name: moved.name, fromPos, meg: isMeg, undone: false });
+
+    renderGame();
+
+    const newListEl = document.getElementById('queue-list');
+    newListEl.querySelectorAll('.queue-row').forEach(el => {
+      const firstRect = firstRects.get(el.dataset.id);
+      if (!firstRect) return;
+      const lastRect = el.getBoundingClientRect();
+      const dy = firstRect.top - lastRect.top;
+      if (Math.abs(dy) < 0.5) return;
+      el.animate(
+        [
+          { transform: `translateY(${dy}px)` },
+          { transform: 'translateY(0)' },
+        ],
+        { duration: 480, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' }
+      );
+    });
+
+    if (scoresVisible()) {
+      gainedBy.forEach(g => {
+        const scoreEl = document.querySelector(`[data-score-for="${g.id}"]`);
+        if (!scoreEl) return;
+        const cell = scoreEl.parentElement;
+        const gain = document.createElement('span');
+        gain.className = 'gain ' + ['gold','silver','bronze'][g.rank];
+        gain.textContent = `+${g.amount}`;
+        cell.appendChild(gain);
+        setTimeout(() => gain.remove(), 950);
+      });
+
+      if (isMeg && state.settings.rules.megPenalty > 0) {
+        const scoreEl = document.querySelector(`[data-score-for="${moved.id}"]`);
+        if (scoreEl) {
+          const cell = scoreEl.parentElement;
+          const gain = document.createElement('span');
+          gain.className = 'gain danger';
+          gain.textContent = `−${state.settings.rules.megPenalty}`;
+          cell.appendChild(gain);
+          setTimeout(() => gain.remove(), 950);
+        }
+      }
+    }
+
+    if (justRevealed) showRevealToast();
+  }
+
+  // ===== Undo =====
+
+  function onUndo() {
+    if (state.history.length === 0) return;
+
+    const listEl = document.getElementById('queue-list');
+    listEl.classList.remove('initial-render');
+
+    const firstRects = new Map();
+    listEl.querySelectorAll('.queue-row').forEach(el => {
+      firstRects.set(el.dataset.id, el.getBoundingClientRect());
+    });
+
+    const snapshot = state.history.pop();
+    state.queue = snapshot.queue;
+    state.revealed = snapshot.revealed;
+
+    for (let i = state.log.length - 1; i >= 0; i--) {
+      if (!state.log[i].undone) { state.log[i].undone = true; break; }
+    }
+
+    renderGame();
+
+    const newListEl = document.getElementById('queue-list');
+    newListEl.querySelectorAll('.queue-row').forEach(el => {
+      const firstRect = firstRects.get(el.dataset.id);
+      if (!firstRect) return;
+      const lastRect = el.getBoundingClientRect();
+      const dy = firstRect.top - lastRect.top;
+      if (Math.abs(dy) < 0.5) return;
+      el.animate(
+        [
+          { transform: `translateY(${dy}px)` },
+          { transform: 'translateY(0)' },
+        ],
+        { duration: 480, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' }
+      );
+    });
+  }
+
+  // ===== Reveal toast =====
+
+  function showRevealToast() {
+    const t = document.createElement('div');
+    t.className = 'reveal-toast';
+    t.textContent = 'SCORES REVEALED';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2900);
+  }
+
+  renderSetup();
+</script>
+</body>
+</html>
