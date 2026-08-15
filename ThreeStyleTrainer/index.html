@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <title>3-Style Corner Trainer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">3BLD Corners</div>
+        <h1>3-Style Trainer</h1>
+      </div>
+      <div class="header-actions">
+        <button class="button ghost" id="exportBtn">Export JSON</button>
+        <label class="button ghost file-button">
+          Import JSON
+          <input id="importInput" type="file" accept="application/json,.json" />
+        </label>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="Main navigation">
+      <button class="tab active" data-view="organize">Organize</button>
+      <button class="tab" data-view="train">Train</button>
+      <button class="tab" data-view="stats">Stats</button>
+    </nav>
+
+    <main>
+      <section class="view active" id="organizeView">
+        <div class="section-heading">
+          <div>
+            <h2>Organize cases</h2>
+            <p>Each unordered pair is one case. Reverses such as BP and PB share the same category, tags, notes, and review count.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="manager-grid">
+            <div class="manager-block">
+              <div class="manager-title-row">
+                <h3>Categories</h3>
+                <span class="muted" id="categoryCount"></span>
+              </div>
+              <form id="categoryForm" class="inline-form category-form">
+                <input id="categoryNameInput" maxlength="40" placeholder="New category" autocomplete="off" />
+                <input id="categoryColorInput" class="color-input" type="color" value="#4f46e5" aria-label="New category color" />
+                <button class="button primary" type="submit">Add</button>
+              </form>
+              <div class="chip-list" id="categoryManagerList"></div>
+            </div>
+
+            <div class="manager-block">
+              <div class="manager-title-row">
+                <h3>Tags</h3>
+                <span class="muted" id="tagCount"></span>
+              </div>
+              <form id="tagForm" class="inline-form">
+                <input id="tagNameInput" maxlength="40" placeholder="New tag" autocomplete="off" />
+                <button class="button primary" type="submit">Add</button>
+              </form>
+              <div class="chip-list" id="tagManagerList"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel sticky-tools">
+          <div class="filter-grid">
+            <label>
+              <span>Search pair / notes</span>
+              <input id="caseSearch" placeholder="e.g. BP or setup note" autocomplete="off" />
+            </label>
+            <label>
+              <span>Category</span>
+              <select id="categoryFilter"></select>
+            </label>
+            <label>
+              <span>Tag</span>
+              <select id="tagFilter"></select>
+            </label>
+            <label>
+              <span>Sort</span>
+              <select id="sortCases">
+                <option value="pair">Pair</option>
+                <option value="reviews-asc">Fewest reviews</option>
+                <option value="reviews-desc">Most reviews</option>
+                <option value="category">Category</option>
+              </select>
+            </label>
+          </div>
+          <div class="filter-footer">
+            <span id="visibleCaseCount" class="muted"></span>
+            <button class="button danger ghost" id="clearAssignmentsBtn">Clear visible assignments</button>
+          </div>
+        </div>
+
+        <div id="caseList" class="case-list"></div>
+      </section>
+
+      <section class="view" id="trainView">
+        <div class="section-heading">
+          <div>
+            <h2>Train</h2>
+            <p>Select categories, shuffle the matching cases, and practice both directions before grading the card.</p>
+          </div>
+        </div>
+
+        <div id="trainSetup">
+          <div class="panel">
+            <h3>Choose cases</h3>
+            <div class="choice-row">
+              <label class="check-pill">
+                <input type="checkbox" id="includeUncategorized" />
+                <span>Include uncategorized</span>
+              </label>
+              <button class="button ghost" id="selectAllCategoriesBtn">Select all</button>
+              <button class="button ghost" id="clearCategorySelectionBtn">Clear</button>
+            </div>
+            <div class="training-filter-row">
+              <label>
+                <span>Containing letter</span>
+                <select id="trainingLetterFilter">
+                  <option value="">Any letter</option>
+                </select>
+              </label>
+              <span class="muted">Applied on top of the selected categories.</span>
+            </div>
+            <div id="trainingCategoryChoices" class="training-category-list"></div>
+            <div class="setup-summary">
+              <strong id="trainingCaseCount">0 cases selected</strong>
+              <span class="muted">Each selected unordered pair appears once initially.</span>
+            </div>
+            <button class="button primary wide" id="startTrainingBtn">Start session</button>
+          </div>
+        </div>
+
+        <div id="activeTraining" class="hidden">
+          <div class="session-bar">
+            <div>
+              <strong id="sessionProgress">0 / 0 good</strong>
+              <span class="muted" id="sessionQueueText"></span>
+            </div>
+            <button class="button ghost" id="endSessionBtn">End session</button>
+          </div>
+
+          <div class="training-card" id="trainingCard">
+            <div class="card-meta">
+              <span class="badge" id="trainingCategoryBadge">Uncategorized</span>
+              <span class="muted" id="trainingReviewCount"></span>
+            </div>
+
+            <div class="direction-label" id="directionLabel">Direction 1 of 2</div>
+            <div class="big-pair" id="trainingPair">BP</div>
+
+            <div class="notes-box hidden" id="trainingNotesBox">
+              <div class="notes-title">Notes</div>
+              <div id="trainingNotesText"></div>
+            </div>
+
+            <div class="card-actions" id="directionActions">
+              <button class="button ghost wide" id="toggleNotesBtn">Show notes</button>
+              <button class="button primary wide" id="nextDirectionBtn">I did this direction →</button>
+            </div>
+
+            <div class="card-actions hidden" id="gradeActions">
+              <button class="button retry wide" id="tryAgainBtn">Try again</button>
+              <button class="button good wide" id="goodBtn">Good</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="sessionComplete" class="panel hidden complete-panel">
+          <div class="complete-icon">✓</div>
+          <h3>Session complete</h3>
+          <p id="completeSummary"></p>
+          <button class="button primary" id="newSessionBtn">Start another session</button>
+        </div>
+      </section>
+
+      <section class="view" id="statsView">
+        <div class="section-heading stats-heading">
+          <div>
+            <h2>Stats</h2>
+            <p>A review is counted only when you mark a case Good.</p>
+          </div>
+          <button class="button danger ghost" id="resetAllReviewsBtn">Reset all review counts</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Total good reviews</span>
+            <strong id="totalReviewsStat">0</strong>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Cases reviewed</span>
+            <strong id="reviewedCasesStat">0 / 189</strong>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Never reviewed</span>
+            <strong id="neverReviewedStat">189</strong>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Average per case</span>
+            <strong id="averageReviewsStat">0.0</strong>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="manager-title-row">
+            <h3>Category totals</h3>
+          </div>
+          <div id="categoryStats" class="stats-list"></div>
+        </div>
+
+        <div class="panel">
+          <div class="stats-toolbar">
+            <h3>Per-case reviews</h3>
+            <select id="statsSort">
+              <option value="asc">Fewest first</option>
+              <option value="desc">Most first</option>
+              <option value="pair">Pair order</option>
+            </select>
+          </div>
+          <div id="caseStatsList" class="stats-case-list"></div>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
