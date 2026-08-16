@@ -68,7 +68,8 @@ function sanitizeState(raw) {
         .map(x => ({
           id: x.id,
           name: x.name.slice(0, 40),
-          color: isHexColor(x.color) ? x.color : DEFAULT_CATEGORY_COLOR
+          color: isHexColor(x.color) ? x.color : DEFAULT_CATEGORY_COLOR,
+          description: typeof x.description === "string" ? x.description.slice(0, 12000) : ""
         }))
     : [];
 
@@ -198,18 +199,25 @@ function renderManagers() {
     ? state.categories.map(c => {
         const editing = editingCategoryId === c.id;
         return editing ? `
-          <span class="manager-chip category-manager-chip editing-category">
-            <input class="manager-name-input" type="text" maxlength="40" value="${escapeHtml(c.name)}" data-edit-category-name="${c.id}" aria-label="Rename ${escapeHtml(c.name)}">
-            <input class="manager-color-input" type="color" value="${c.color}" data-edit-category-color="${c.id}" aria-label="Color for ${escapeHtml(c.name)}">
-            <button class="category-action save" data-save-category="${c.id}">Save</button>
-            <button class="category-action" data-cancel-category="${c.id}">Cancel</button>
-          </span>` : `
-          <span class="manager-chip category-manager-chip">
-            <span class="category-swatch" style="background:${c.color}"></span>
-            <span class="category-name">${escapeHtml(c.name)}</span>
-            <button class="category-action" data-edit-category="${c.id}">Edit</button>
-            <button class="chip-delete" data-delete-category="${c.id}" aria-label="Delete ${escapeHtml(c.name)}">×</button>
-          </span>`;
+          <div class="manager-chip category-manager-chip editing-category">
+            <div class="category-edit-topline">
+              <input class="manager-name-input" type="text" maxlength="40" value="${escapeHtml(c.name)}" data-edit-category-name="${c.id}" aria-label="Rename ${escapeHtml(c.name)}">
+              <input class="manager-color-input" type="color" value="${c.color}" data-edit-category-color="${c.id}" aria-label="Color for ${escapeHtml(c.name)}">
+            </div>
+            <div class="category-edit-actions">
+              <button class="category-action save" data-save-category="${c.id}">Save</button>
+              <button class="category-action" data-cancel-category="${c.id}">Cancel</button>
+            </div>
+          </div>` : `
+          <div class="manager-chip category-manager-chip">
+            <div class="category-summary-row">
+              <span class="category-swatch" style="background:${c.color}"></span>
+              <span class="category-name">${escapeHtml(c.name)}</span>
+              <span class="category-spacer"></span>
+              <button class="category-action" data-edit-category="${c.id}">Edit</button>
+              <button class="chip-delete" data-delete-category="${c.id}" aria-label="Delete ${escapeHtml(c.name)}">×</button>
+            </div>
+          </div>`;
       }).join("")
     : `<span class="muted">No categories yet.</span>`;
 
@@ -241,6 +249,33 @@ function renderFilters() {
 
   if ([...categoryFilter.options].some(o => o.value === prevCat)) categoryFilter.value = prevCat;
   if ([...tagFilter.options].some(o => o.value === prevTag)) tagFilter.value = prevTag;
+  renderSelectedCategoryDescription();
+}
+
+function renderSelectedCategoryDescription() {
+  const filter = document.getElementById("categoryFilter");
+  const panel = document.getElementById("selectedCategoryDescriptionPanel");
+  const nameEl = document.getElementById("selectedCategoryDescriptionName");
+  const swatchEl = document.getElementById("selectedCategoryDescriptionSwatch");
+  const input = document.getElementById("selectedCategoryDescriptionInput");
+
+  if (!filter || !panel || !nameEl || !swatchEl || !input) return;
+
+  const categoryId = filter.value;
+  const category = state.categories.find(c => c.id === categoryId);
+
+  if (!category) {
+    panel.classList.add("hidden");
+    input.value = "";
+    input.dataset.categoryId = "";
+    return;
+  }
+
+  panel.classList.remove("hidden");
+  nameEl.textContent = category.name;
+  swatchEl.style.background = category.color;
+  input.value = category.description || "";
+  input.dataset.categoryId = category.id;
 }
 
 function getFilteredCaseIds() {
@@ -252,8 +287,7 @@ function getFilteredCaseIds() {
   let ids = ALL_CASE_IDS.filter(id => {
     const item = state.cases[id];
     const pairText = `${id} ${reversePair(id)}`;
-    const notesText = item.notes.toUpperCase();
-    const matchesSearch = !q || pairText.includes(q) || notesText.includes(q);
+    const matchesSearch = !q || pairText.includes(q);
 
     let matchesCat = true;
     if (cat === "uncategorized") matchesCat = !item.categoryId;
@@ -341,18 +375,21 @@ function renderCases() {
 
 function renderTrainingChoices() {
   const container = document.getElementById("trainingCategoryChoices");
-  const letterFilter = document.getElementById("trainingLetterFilter");
-  if (letterFilter && letterFilter.options.length === 1) {
-    TARGET_LETTERS.forEach(letter => {
-      const option = document.createElement("option");
-      option.value = letter;
-      option.textContent = letter;
-      letterFilter.appendChild(option);
-    });
-  }
+  const letterContainer = document.getElementById("trainingLetterChoices");
+
   const previous = new Set(
     [...container.querySelectorAll('input[type="checkbox"]:checked')].map(x => x.value)
   );
+  const previousLetters = new Set(
+    [...letterContainer.querySelectorAll('input[type="checkbox"]:checked')].map(x => x.value)
+  );
+
+  letterContainer.innerHTML = TARGET_LETTERS.map(letter => `
+    <label class="letter-choice">
+      <input type="checkbox" value="${letter}" ${previousLetters.has(letter) ? "checked" : ""}>
+      <span>${letter}</span>
+    </label>
+  `).join("");
 
   if (!state.categories.length) {
     container.innerHTML = `<span class="muted">No categories yet. You can still train uncategorized cases.</span>`;
@@ -373,12 +410,16 @@ function selectedTrainingCaseIds() {
     [...document.querySelectorAll('#trainingCategoryChoices input[type="checkbox"]:checked')].map(x => x.value)
   );
   const includeUncategorized = document.getElementById("includeUncategorized").checked;
-  const letter = document.getElementById("trainingLetterFilter")?.value || "";
+  const selectedLetters = new Set(
+    [...document.querySelectorAll('#trainingLetterChoices input[type="checkbox"]:checked')].map(x => x.value)
+  );
 
   return ALL_CASE_IDS.filter(id => {
     const cat = state.cases[id].categoryId;
     const matchesCategory = (cat && selectedCats.has(cat)) || (!cat && includeUncategorized);
-    const matchesLetter = !letter || id.includes(letter);
+    const matchesLetter =
+      selectedLetters.size === 0 ||
+      [...selectedLetters].some(letter => id.includes(letter));
     return matchesCategory && matchesLetter;
   });
 }
@@ -654,7 +695,8 @@ function addCategory(name, color) {
   state.categories.push({
     id: uid("cat"),
     name: clean,
-    color: isHexColor(color) ? color : DEFAULT_CATEGORY_COLOR
+    color: isHexColor(color) ? color : DEFAULT_CATEGORY_COLOR,
+    description: ""
   });
   saveState();
   renderAll();
@@ -844,8 +886,21 @@ function bindEvents() {
     if (id) deleteTag(id);
   });
 
-  ["caseSearch", "categoryFilter", "tagFilter", "sortCases"].forEach(id => {
+  ["caseSearch", "tagFilter", "sortCases"].forEach(id => {
     document.getElementById(id).addEventListener(id === "caseSearch" ? "input" : "change", renderCases);
+  });
+
+  document.getElementById("categoryFilter").addEventListener("change", () => {
+    renderSelectedCategoryDescription();
+    renderCases();
+  });
+
+  document.getElementById("selectedCategoryDescriptionInput").addEventListener("input", e => {
+    const categoryId = e.target.dataset.categoryId;
+    const category = state.categories.find(c => c.id === categoryId);
+    if (!category) return;
+    category.description = e.target.value.slice(0, 12000);
+    saveState();
   });
 
   document.getElementById("caseList").addEventListener("change", e => {
@@ -853,8 +908,21 @@ function bindEvents() {
     const tagCaseId = e.target.dataset.caseTag;
 
     if (categoryId) {
-      state.cases[categoryId].categoryId = e.target.value || null;
+      const newCategoryId = e.target.value || null;
+      state.cases[categoryId].categoryId = newCategoryId;
       saveState();
+
+      // Update this card's category color immediately instead of waiting for
+      // the organizer list to be rendered again.
+      const card = e.target.closest(".case-card");
+      if (card) {
+        if (newCategoryId) {
+          card.style.borderLeft = `5px solid ${getCategoryColor(newCategoryId)}`;
+        } else {
+          card.style.borderLeft = "";
+        }
+      }
+
       renderTrainingChoices();
       updateTrainingSelectionCount();
       renderStats();
@@ -899,7 +967,17 @@ function bindEvents() {
 
   document.getElementById("trainingCategoryChoices").addEventListener("change", updateTrainingSelectionCount);
   document.getElementById("includeUncategorized").addEventListener("change", updateTrainingSelectionCount);
-  document.getElementById("trainingLetterFilter").addEventListener("change", updateTrainingSelectionCount);
+  document.getElementById("trainingLetterChoices").addEventListener("change", updateTrainingSelectionCount);
+
+  document.getElementById("selectAllLettersBtn").addEventListener("click", () => {
+    document.querySelectorAll('#trainingLetterChoices input[type="checkbox"]').forEach(x => x.checked = true);
+    updateTrainingSelectionCount();
+  });
+
+  document.getElementById("clearLetterSelectionBtn").addEventListener("click", () => {
+    document.querySelectorAll('#trainingLetterChoices input[type="checkbox"]').forEach(x => x.checked = false);
+    updateTrainingSelectionCount();
+  });
 
   document.getElementById("selectAllCategoriesBtn").addEventListener("click", () => {
     document.querySelectorAll('#trainingCategoryChoices input[type="checkbox"]').forEach(x => x.checked = true);
@@ -915,6 +993,21 @@ function bindEvents() {
 
   document.getElementById("startTrainingBtn").addEventListener("click", startSession);
   document.getElementById("nextDirectionBtn").addEventListener("click", advanceDirection);
+
+  document.addEventListener("keydown", e => {
+    if (e.code !== "Space") return;
+    if (!training.active) return;
+
+    const directionActions = document.getElementById("directionActions");
+    if (!directionActions || directionActions.classList.contains("hidden")) return;
+
+    const activeTag = document.activeElement?.tagName?.toLowerCase();
+    if (["input", "textarea", "select"].includes(activeTag)) return;
+
+    e.preventDefault();
+    advanceDirection();
+  });
+
   document.getElementById("goodBtn").addEventListener("click", gradeGood);
   document.getElementById("tryAgainBtn").addEventListener("click", gradeTryAgain);
   document.getElementById("endSessionBtn").addEventListener("click", endSession);

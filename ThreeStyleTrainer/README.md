@@ -17,7 +17,7 @@ Your data is stored in that browser's `localStorage`.
 - Reverse directions are grouped as one case, e.g. `BP / PB`.
 - Categories have user-selectable colors, shown in the organizer, trainer, and stats.
 - Each case can have:
-  - one category
+  - one category, with a color and long description
   - any number of tags
   - freeform notes
   - a successful review count
@@ -52,3 +52,50 @@ Pairs using two stickers from the same physical target corner are excluded.
 - Categories display normally with an Edit button; name/color fields only appear while editing.
 
 - Reset individual or all successful review counts from the Stats page without touching categories, tags, colors, or notes.
+
+
+## v7 changes
+
+- Organizer search now searches **letter pairs only**; notes are not included in search.
+- Navigation tabs and organizer filters are no longer sticky. The entire page scrolls normally.
+
+
+## v8 changes
+
+- Categories can be reordered with Up/Down controls. The stored category array order is used throughout the app.
+- Changing a letter pair's category immediately updates that case card's colored border.
+
+
+## v9 changes
+
+- The Train page now supports selecting any subset of target letters.
+- A case is included if it contains at least one selected letter.
+- With no letters selected, letter filtering is disabled.
+- Includes Select all / Clear controls for the letter set.
+
+
+## v10 changes
+
+- Category descriptions are no longer displayed inside the category manager items.
+- Selecting a specific category in the Organizer's Category dropdown reveals that category's description below the filters.
+- The description is directly editable there and auto-saves as you type.
+- "All" and "Uncategorized" do not show a description editor.
+
+
+## v11 changes
+
+- Removed the category reordering arrows and related controls.
+- Categories stay in their existing order, keeping the category manager cleaner.
+
+
+## v12 changes
+
+- Fixed malformed category-layout CSS from an earlier update.
+- Category color swatches are now true circles with fixed width/height and cannot be squished by flex layout.
+
+
+## v13 changes
+
+- While training a direction, pressing **Space** performs the same action as "I did this direction".
+- Space does nothing on the Good / Try Again grading screen.
+- The shortcut prevents normal page scrolling while it is active.

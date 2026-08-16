@@ -98,9 +98,6 @@ h3 { margin-bottom: 10px; }
   background: #e8edf4;
   border-radius: 14px;
   margin-bottom: 22px;
-  position: sticky;
-  top: 8px;
-  z-index: 20;
   box-shadow: 0 6px 20px rgba(17,24,39,.06);
 }
 
@@ -227,10 +224,14 @@ textarea { min-height: 86px; resize: vertical; }
 }
 
 .category-swatch {
+  display: inline-block;
   width: 12px;
   height: 12px;
+  min-width: 12px;
+  min-height: 12px;
+  flex-shrink: 0;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
-  flex: 0 0 auto;
   border: 1px solid rgba(0,0,0,.15);
 }
 
@@ -291,6 +292,8 @@ textarea { min-height: 86px; resize: vertical; }
 .training-choice .category-swatch {
   width: 14px;
   height: 14px;
+  min-width: 14px;
+  min-height: 14px;
 }
 
 .chip-delete {
@@ -318,9 +321,7 @@ label > span {
 .filter-footer { margin-top: 10px; }
 
 .sticky-tools {
-  position: sticky;
-  top: 66px;
-  z-index: 10;
+  position: static;
 }
 
 .muted { color: var(--muted); }
@@ -698,3 +699,192 @@ label > span {
 @media (max-width: 420px) {
   .stats-grid { grid-template-columns: 1fr; }
 }
+
+
+/* v6: category descriptions */
+#categoryManagerList {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.category-manager-chip {
+  width: 100%;
+  display: block;
+  border-radius: 12px;
+  padding: 10px 11px;
+}
+
+.category-summary-row,
+.category-edit-topline,
+.category-edit-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.category-spacer { flex: 1; }
+
+.category-description-display,
+.category-description-empty {
+  margin-top: 7px;
+  padding-left: 20px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+}
+
+.category-description-display { color: var(--text); }
+.category-description-empty { color: var(--muted); font-style: italic; }
+
+.editing-category {
+  display: grid;
+  gap: 10px;
+}
+
+.category-edit-topline .manager-name-input {
+  flex: 1;
+  width: auto;
+}
+
+.category-description-field { display: block; }
+.category-description-field > span {
+  display: block;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.category-description-input {
+  width: 100%;
+  min-height: 140px;
+}
+
+.category-edit-actions { justify-content: flex-end; }
+
+@media (max-width: 520px) {
+  .category-summary-row { flex-wrap: wrap; }
+  .category-summary-row .category-spacer { flex: 1 1 auto; }
+  .category-description-display,
+  .category-description-empty { padding-left: 0; }
+  .category-edit-topline { align-items: stretch; }
+}
+
+
+/* v9: multi-select training letter filter */
+.letter-filter-block {
+  margin: 4px 0 16px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--soft);
+}
+
+.letter-filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.letter-filter-header .muted {
+  margin-top: 3px;
+  font-size: .84rem;
+}
+
+.letter-filter-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.letter-choice-list {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.letter-choice {
+  position: relative;
+}
+
+.letter-choice input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.letter-choice span {
+  min-height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--panel);
+  color: var(--text);
+  font-weight: 900;
+  user-select: none;
+  cursor: pointer;
+}
+
+.letter-choice input:checked + span {
+  background: var(--text);
+  color: white;
+  border-color: var(--text);
+}
+
+@media (max-width: 760px) {
+  .letter-choice-list {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .letter-filter-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .letter-filter-actions {
+    width: 100%;
+  }
+
+  .letter-filter-actions .button {
+    flex: 1;
+  }
+
+  .letter-choice-list {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+
+/* v10: category descriptions live with the category filter, not the manager chips */
+.selected-category-description {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.selected-category-description-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 7px;
+}
+
+.selected-category-description-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#selectedCategoryDescriptionInput {
+  min-height: 150px;
+  background: var(--panel);
+}
+
+/* Old description-display styles are harmless, but manager chips no longer render them. */

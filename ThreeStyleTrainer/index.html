@@ -70,8 +70,8 @@
         <div class="panel sticky-tools">
           <div class="filter-grid">
             <label>
-              <span>Search pair / notes</span>
-              <input id="caseSearch" placeholder="e.g. BP or setup note" autocomplete="off" />
+              <span>Search pair</span>
+              <input id="caseSearch" placeholder="e.g. BP" autocomplete="off" />
             </label>
             <label>
               <span>Category</span>
@@ -90,6 +90,20 @@
                 <option value="category">Category</option>
               </select>
             </label>
+          </div>
+          <div id="selectedCategoryDescriptionPanel" class="selected-category-description hidden">
+            <div class="selected-category-description-header">
+              <div class="selected-category-description-title">
+                <span id="selectedCategoryDescriptionSwatch" class="category-swatch"></span>
+                <strong id="selectedCategoryDescriptionName"></strong>
+              </div>
+              <span class="muted">Category description</span>
+            </div>
+            <textarea
+              id="selectedCategoryDescriptionInput"
+              maxlength="12000"
+              placeholder="Describe this category, recognition idea, setup pattern, exceptions, etc."
+            ></textarea>
           </div>
           <div class="filter-footer">
             <span id="visibleCaseCount" class="muted"></span>
@@ -119,14 +133,18 @@
               <button class="button ghost" id="selectAllCategoriesBtn">Select all</button>
               <button class="button ghost" id="clearCategorySelectionBtn">Clear</button>
             </div>
-            <div class="training-filter-row">
-              <label>
-                <span>Containing letter</span>
-                <select id="trainingLetterFilter">
-                  <option value="">Any letter</option>
-                </select>
-              </label>
-              <span class="muted">Applied on top of the selected categories.</span>
+            <div class="letter-filter-block">
+              <div class="letter-filter-header">
+                <div>
+                  <strong>Containing letters</strong>
+                  <div class="muted">Cases containing at least one selected letter. Select none for no letter filter.</div>
+                </div>
+                <div class="letter-filter-actions">
+                  <button class="button ghost" id="selectAllLettersBtn" type="button">Select all</button>
+                  <button class="button ghost" id="clearLetterSelectionBtn" type="button">Clear</button>
+                </div>
+              </div>
+              <div id="trainingLetterChoices" class="letter-choice-list"></div>
             </div>
             <div id="trainingCategoryChoices" class="training-category-list"></div>
             <div class="setup-summary">
