@@ -185,6 +185,7 @@ function renderAll() {
   renderCases();
   renderTrainingChoices();
   updateTrainingSelectionCount();
+  renderCategoryMatrix();
   renderStats();
 }
 
@@ -209,8 +210,15 @@ function renderManagers() {
               <button class="category-action" data-cancel-category="${c.id}">Cancel</button>
             </div>
           </div>` : `
-          <div class="manager-chip category-manager-chip">
+          <div class="manager-chip category-manager-chip" data-category-chip="${c.id}">
             <div class="category-summary-row">
+              <button
+                class="category-drag-handle"
+                type="button"
+                data-drag-category="${c.id}"
+                aria-label="Drag to reorder ${escapeHtml(c.name)}"
+                title="Drag to reorder"
+              >⋮⋮</button>
               <span class="category-swatch" style="background:${c.color}"></span>
               <span class="category-name">${escapeHtml(c.name)}</span>
               <span class="category-spacer"></span>
@@ -471,6 +479,7 @@ function loadNextTrainingCard() {
   document.getElementById("toggleNotesBtn").textContent = "Show notes";
   document.getElementById("directionActions").classList.remove("hidden");
   document.getElementById("gradeActions").classList.add("hidden");
+  document.getElementById("trainingNoteEditor").classList.add("hidden");
 
   renderTrainingCard();
 }
@@ -497,6 +506,9 @@ function renderTrainingCard() {
   document.getElementById("directionLabel").textContent = `Direction ${training.directionIndex + 1} of 2`;
   document.getElementById("trainingPair").textContent = currentDirectionPair();
   document.getElementById("trainingNotesText").textContent = item.notes || "No notes for this case.";
+  const trainingNoteInput = document.getElementById("trainingNoteInput");
+  trainingNoteInput.value = item.notes || "";
+  trainingNoteInput.dataset.caseId = id;
 
   document.getElementById("sessionProgress").textContent =
     `${training.goodCount} / ${training.totalUnique} good`;
@@ -514,6 +526,7 @@ function advanceDirection() {
   }
 
   document.getElementById("directionActions").classList.add("hidden");
+  document.getElementById("trainingNoteEditor").classList.remove("hidden");
   document.getElementById("gradeActions").classList.remove("hidden");
   document.getElementById("directionLabel").textContent = "Grade both directions";
   document.getElementById("trainingPair").textContent = `${training.currentId} / ${reversePair(training.currentId)}`;
@@ -558,6 +571,43 @@ function endSession() {
   document.getElementById("activeTraining").classList.add("hidden");
   document.getElementById("sessionComplete").classList.add("hidden");
   document.getElementById("trainSetup").classList.remove("hidden");
+}
+
+
+function renderCategoryMatrix() {
+  const container = document.getElementById("categoryMatrix");
+  if (!container) return;
+
+  let html = `<div class="matrix-label corner"></div>`;
+
+  for (const letter of TARGET_LETTERS) {
+    html += `<div class="matrix-label top">${letter}</div>`;
+  }
+
+  for (let row = 0; row < TARGET_LETTERS.length; row++) {
+    const a = TARGET_LETTERS[row];
+    html += `<div class="matrix-label side">${a}</div>`;
+
+    for (let col = 0; col < TARGET_LETTERS.length; col++) {
+      const b = TARGET_LETTERS[col];
+
+      if (col <= row || pieceOf[a] === pieceOf[b]) {
+        html += `<div class="matrix-cell blocked" aria-hidden="true"></div>`;
+        continue;
+      }
+
+      const id = canonicalPair(a, b);
+      const item = state.cases[id];
+      const color = getCategoryColor(item.categoryId);
+      const title = `${id} / ${reversePair(id)} — ${getCategoryName(item.categoryId)}`;
+      const cls = color ? "categorized" : "uncategorized";
+      const style = color ? ` style="background:${color};"` : "";
+
+      html += `<div class="matrix-cell ${cls}" title="${escapeHtml(title)}"${style}></div>`;
+    }
+  }
+
+  container.innerHTML = html;
 }
 
 function renderStats() {
@@ -783,6 +833,73 @@ function clearVisibleAssignments() {
   showToast("Visible assignments cleared");
 }
 
+
+let categoryDrag = null;
+
+function beginCategoryDrag(event) {
+  const handle = event.target.closest("[data-drag-category]");
+  if (!handle) return;
+
+  const chip = handle.closest("[data-category-chip]");
+  if (!chip) return;
+
+  event.preventDefault();
+  categoryDrag = { pointerId: event.pointerId, chip, handle, moved: false };
+  chip.classList.add("dragging-category");
+  document.body.classList.add("category-drag-active");
+
+  try { handle.setPointerCapture(event.pointerId); } catch {}
+}
+
+function moveCategoryDrag(event) {
+  if (!categoryDrag || event.pointerId !== categoryDrag.pointerId) return;
+  event.preventDefault();
+
+  const { chip } = categoryDrag;
+  chip.style.pointerEvents = "none";
+  const underneath = document.elementFromPoint(event.clientX, event.clientY);
+  chip.style.pointerEvents = "";
+
+  const target = underneath?.closest?.("[data-category-chip]");
+  if (!target || target === chip || !target.parentElement) return;
+
+  const rect = target.getBoundingClientRect();
+  const before = event.clientY < rect.top + rect.height / 2;
+  const parent = target.parentElement;
+
+  if (before) parent.insertBefore(chip, target);
+  else parent.insertBefore(chip, target.nextSibling);
+
+  categoryDrag.moved = true;
+}
+
+function finishCategoryDrag(event) {
+  if (!categoryDrag || event.pointerId !== categoryDrag.pointerId) return;
+
+  const { chip, handle, moved } = categoryDrag;
+  try { handle.releasePointerCapture(event.pointerId); } catch {}
+
+  chip.classList.remove("dragging-category");
+  document.body.classList.remove("category-drag-active");
+
+  if (moved) {
+    const orderedIds = [...document.querySelectorAll("#categoryManagerList [data-category-chip]")]
+      .map(el => el.dataset.categoryChip);
+    const byId = new Map(state.categories.map(category => [category.id, category]));
+    const reordered = orderedIds.map(id => byId.get(id)).filter(Boolean);
+    const seen = new Set(reordered.map(category => category.id));
+    for (const category of state.categories) {
+      if (!seen.has(category.id)) reordered.push(category);
+    }
+    state.categories = reordered;
+    saveState();
+    renderAll();
+    showToast("Category order saved");
+  }
+
+  categoryDrag = null;
+}
+
 function bindEvents() {
   document.querySelectorAll(".tab").forEach(tab => {
     tab.addEventListener("click", () => {
@@ -810,6 +927,12 @@ function bindEvents() {
     addTag(input.value);
     input.value = "";
   });
+
+  const categoryManagerList = document.getElementById("categoryManagerList");
+  categoryManagerList.addEventListener("pointerdown", beginCategoryDrag);
+  categoryManagerList.addEventListener("pointermove", moveCategoryDrag);
+  categoryManagerList.addEventListener("pointerup", finishCategoryDrag);
+  categoryManagerList.addEventListener("pointercancel", finishCategoryDrag);
 
   document.getElementById("categoryManagerList").addEventListener("click", e => {
     const deleteId = e.target.dataset.deleteCategory;
@@ -1022,6 +1145,16 @@ function bindEvents() {
     box.classList.toggle("hidden");
     document.getElementById("toggleNotesBtn").textContent =
       box.classList.contains("hidden") ? "Show notes" : "Hide notes";
+  });
+
+  document.getElementById("trainingNoteInput").addEventListener("input", e => {
+    const caseId = e.target.dataset.caseId;
+    if (!caseId || !state.cases[caseId]) return;
+
+    state.cases[caseId].notes = e.target.value.slice(0, 4000);
+    document.getElementById("trainingNotesText").textContent =
+      state.cases[caseId].notes || "No notes for this case.";
+    saveState();
   });
 
   document.getElementById("statsSort").addEventListener("change", renderStats);

@@ -27,6 +27,7 @@
       <button class="tab active" data-view="organize">Organize</button>
       <button class="tab" data-view="train">Train</button>
       <button class="tab" data-view="stats">Stats</button>
+      <button class="tab" data-view="map">Map</button>
     </nav>
 
     <main>
@@ -183,6 +184,18 @@
               <button class="button primary wide" id="nextDirectionBtn">I did this direction →</button>
             </div>
 
+            <div class="training-note-editor hidden" id="trainingNoteEditor">
+              <div class="training-note-editor-header">
+                <strong>Notes for this pair</strong>
+                <span class="muted">Auto-saves</span>
+              </div>
+              <textarea
+                id="trainingNoteInput"
+                maxlength="4000"
+                placeholder="Add a recognition cue, setup reminder, execution note..."
+              ></textarea>
+            </div>
+
             <div class="card-actions hidden" id="gradeActions">
               <button class="button retry wide" id="tryAgainBtn">Try again</button>
               <button class="button good wide" id="goodBtn">Good</button>
@@ -195,6 +208,26 @@
           <h3>Session complete</h3>
           <p id="completeSummary"></p>
           <button class="button primary" id="newSessionBtn">Start another session</button>
+        </div>
+      </section>
+
+
+      <section class="view" id="mapView">
+        <div class="section-heading">
+          <div>
+            <h2>Case map</h2>
+            <p>A non-interactive matrix view of the unordered pairs, colored by their assigned category.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <p class="muted map-help">
+            White cells are uncategorized valid pairs. Dark cells are blocked cells
+            (same letter, lower triangle, or same-piece combinations).
+          </p>
+          <div class="matrix-scroll">
+            <div id="categoryMatrix" class="category-matrix" aria-label="Color-coded case matrix"></div>
+          </div>
         </div>
       </section>
 

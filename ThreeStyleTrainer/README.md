@@ -99,3 +99,28 @@ Pairs using two stickers from the same physical target corner are excluded.
 - While training a direction, pressing **Space** performs the same action as "I did this direction".
 - Space does nothing on the Good / Try Again grading screen.
 - The shortcut prevents normal page scrolling while it is active.
+
+
+## v14 changes
+
+- Added a new **Map** page.
+- The Map page shows a non-interactive matrix of all unordered target pairs.
+- Valid categorized pairs are colored with their category color.
+- Valid uncategorized pairs are white.
+- Lower-triangle cells, diagonal cells, and same-piece combinations are shown as blocked dark cells.
+
+
+## v15 changes
+
+- After completing both directions of a training card, the grading screen now includes a notes editor.
+- Notes auto-save as you type.
+- Training notes use the same per-pair notes field as the Organizer page.
+- Existing notes are prefilled, so they can be edited during study.
+
+
+## v16 changes
+
+- Category ordering is back, now with drag-and-drop instead of arrow buttons.
+- Categories appear as a clean vertical list with a subtle drag handle.
+- Dragging works with mouse, pen, and touch via Pointer Events.
+- The new order is saved immediately and is reflected throughout the app and JSON export.
